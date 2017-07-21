@@ -149,30 +149,6 @@ void  printTimeSampling( AbcA::TimeSamplingPtr iTime, index_t iMaxSample,
 }
 
 //-*****************************************************************************
-void printParent( Abc::ICompoundProperty iProp,
-                  bool all = false,
-                  bool long_list = false,
-                  bool recursive = false,
-                  bool first = false )
-{
-    std::cout << "  \"" << iProp.getObject().getFullName() << "/" <<
-        iProp.getName() << "\": " << std::endl;
-}
-
-//-*****************************************************************************
-void printParent( AbcG::IObject iObj,
-                  bool all = false,
-                  bool long_list = false,
-                  bool recursive = false,
-                  bool first = false )
-{
-    if ( !first && !long_list )
-        std::cout << std::endl;
-
-    std::cout << "  \"" << iObj.getFullName() << "\":" << std::endl;
-}
-
-//-*****************************************************************************
 void printMetaData( AbcA::MetaData md )
 {
     std::stringstream ss( md.serialize() );
@@ -257,14 +233,15 @@ void getArrayValue( Abc::IArrayProperty &p, Abc::PropertyHeader &header,
             std::cout << "\"";
         }
 
+        if (i+1 != totalValues) {
+            std::cout << ", ";
+        }
+
         if ( (i + 1) % extent == 0 ) {
             std::cout << std::endl;
         }
-        else if (totalValues != 1) {
-            std::cout << ", ";
-        }
     }
-    std::cout << " ]" << std::endl;
+    std::cout << "]" << std::endl;
 }
 
 //-*****************************************************************************
@@ -292,7 +269,7 @@ void printValue( Abc::ICompoundProperty iParent, Abc::PropertyHeader header,
         if ( justSize ) {
             AbcU::Dimensions dims;
             p.getDimensions( dims, iss );
-            std::cout << "  \"extent\": " << (int) extent << ", ";
+            std::cout << "  \"extent\": " << (int) extent << ", " << std::endl;
             std::cout << "  \"num_points\": " << dims.numPoints() << std::endl;
             return;
         }
@@ -355,36 +332,36 @@ void printChild( Abc::ICompoundProperty iParent, Abc::PropertyHeader header,
                  bool all = false, bool long_list = false, bool meta = false,
                  bool values = false )
 {
-    std::cout << "  \"" << header.getName() << "\": {";
+    std::cout << "  \"" << header.getName() << "\": {" << std::endl;
     if ( long_list ) {
         if ( header.isCompound() ) {
-            std::cout << "    \"property_type\": \"compound\", ";
+            std::cout << "    \"property_type\": \"compound\"";
         } else if ( header.isScalar() ) {
-            std::cout << "    \"property_type\": \"scalar\", ";
-            std::cout << "    \"data_type\": \"" << header.getDataType() << "\", ";
-        } else if ( header.isArray() ) {
-            std::cout << "    \"property_type\": \"array\", ";
-            std::cout << "    \"data_type\": \"" << header.getDataType() << "\", ";
-        }
-    }
+            std::cout << "    \"property_type\": \"scalar\", " << std::endl;
+            std::cout << "    \"data_type\": \"" << header.getDataType() << "\", " << std::endl;
 
-    if ( long_list ) {
-        if ( header.isScalar() ) {
             Abc::IScalarProperty iProp( iParent, header.getName() );
             if (iProp.isConstant()) {
                 std::cout << "    \"constant\": 1," << std::endl;
             }
-            std::cout << "    \"num_samples\": " << iProp.getNumSamples() << ", " << std::endl;
+            std::cout << "    \"num_samples\": " << iProp.getNumSamples();
         } else if ( header.isArray() ) {
+            std::cout << "    \"property_type\": \"array\", " << std::endl;
+            std::cout << "    \"data_type\": \"" << header.getDataType() << "\", " << std::endl;
+
             Abc::IArrayProperty iProp( iParent, header.getName() );
             if (iProp.isConstant()) {
                 std::cout << "    \"constant\": 1," << std::endl;
             }
-            std::cout << "    \"num_samples\": " << iProp.getNumSamples() << ", " << std::endl;
+            std::cout << "    \"num_samples\": " << iProp.getNumSamples();
         }
 
         if ( meta ) {
+            std::cout << ", " << std::endl;
             printMetaData(header.getMetaData());
+        }
+        else {
+            std::cout << std::endl;
         }
     }
 
@@ -397,16 +374,19 @@ void printChild( Abc::ICompoundProperty iParent, Abc::PropertyHeader header,
         }
     }
 
-    std::cout << "  }";
+    std::cout << "  }" << std::endl;
 }
 
 //-*****************************************************************************
-void printChild( AbcG::IObject iParent, AbcG::IObject iObj,
-                 bool all = false, bool long_list = false, bool meta = false,
-                 bool values = false )
+void printChild( AbcG::IObject iObj, bool meta = false, bool fullName = false )
 {
 
-    std::cout << "  \""<< iObj.getName() << "\": {" << std::endl;
+    if (fullName) {
+        std::cout << "  \""<< iObj.getFullName() << "\": {" << std::endl;
+    }
+    else {
+        std::cout << "  \""<< iObj.getName() << "\": {" << std::endl;
+    }
 
     if ( meta ) {
         printMetaData( iObj.getMetaData());
@@ -429,13 +409,6 @@ void visit( Abc::ICompoundProperty iProp,
             bool first = false,
             bool values = false )
 {
-    std::cout << "  \"props\": {" << std::endl;
-
-    // header
-    if ( recursive && iProp.getNumProperties() > 0 ) {
-        printParent( iProp, all, long_list, recursive, first );
-    }
-
     // children
     for( size_t c = 0; c < iProp.getNumProperties(); ++c ) {
         printChild( iProp, iProp.getPropertyHeader( c ), all, long_list, meta,
@@ -451,8 +424,6 @@ void visit( Abc::ICompoundProperty iProp,
                        all, long_list, meta, recursive, false, values );
         }
     }
-
-    std::cout << "  }" << std::endl;
 }
 
 //-*****************************************************************************
@@ -467,20 +438,13 @@ void visit( AbcG::IObject iObj,
 {
     Abc::ICompoundProperty props = iObj.getProperties();
 
-    // header
-    if ( recursive &&
-       ( iObj.getNumChildren() > 0 ||
-       ( all && props.getNumProperties() > 0 ) ) ) {
-        printParent( iObj, all, long_list, recursive, first );
-    }
-
     // children
     for( size_t c = 0; c < iObj.getNumChildren(); ++c ) {
-        printChild( iObj, iObj.getChild( c ), all, long_list, meta, values );
+        printChild( iObj.getChild( c ), meta, recursive );
     }
 
     // properties
-    if ( all ) {
+    if ( all && !recursive ) {
         std::cout << "  \"props\": {" << std::endl;
         for( size_t h = 0; h < props.getNumProperties(); ++h ) {
             printChild( props, props.getPropertyHeader( h ), all, long_list, meta, values );
@@ -490,15 +454,15 @@ void visit( AbcG::IObject iObj,
 
     // visit property children
     if ( recursive && all && props.getNumProperties() > 0 ) {
+        std::cout << "  \"props\": {" << std::endl;
         for( size_t p = 0; p < props.getNumProperties(); ++p ) {
             Abc::PropertyHeader header = props.getPropertyHeader( p );
             if ( header.isCompound() ) {
-                if ( !long_list )
-                    std::cout << std::endl;
                 visit( Abc::ICompoundProperty( props, header.getName() ),
                        all, long_list, meta, recursive, false, values );
             }
         }
+        std::cout << "  }" << std::endl;
     }
 
     // visit object children
@@ -696,7 +660,7 @@ int main( int argc, char *argv[] )
                 AbcA::TimeSamplingPtr ts = archive.getTimeSampling( k );
                 index_t maxSample =
                     archive.getMaxNumSamplesForTimeSamplingIndex( k );
-                std::cout << "    \"" << k << "\": { ";
+                std::cout << "    \"" << k << "\": { " << std::endl;
                 printTimeSampling( ts, maxSample, fps );
                 if (k != numTimes - 1) {
                     std::cout << "    }," << std::endl;
@@ -753,8 +717,11 @@ int main( int argc, char *argv[] )
         if ( shouldPrintValue ) {
             printValue( props, *header, index, opt_size, opt_time, fps );
         } else {
-            if ( found && header->isCompound() )
+            if ( found && header->isCompound() ) {
+                std::cout << "  props {" << std::endl;
                 visit( props, opt_all, opt_long, opt_meta, opt_recursive, true, opt_values );
+                std::cout << "  }" << std::endl;
+            }
             else if ( found && header->isSimple() )
                 printChild( props, *header, opt_all, opt_long, opt_values );
             else
