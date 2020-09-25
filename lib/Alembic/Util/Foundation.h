@@ -113,8 +113,8 @@ namespace Alembic {
 namespace Util {
 namespace ALEMBIC_VERSION_NS {
 
-// similiar to boost::noncopyable
-// explicitly hides copy construction and copy assignment
+//! similiar to boost::noncopyable, eventually use = delete
+/*! explicitly hides copy construction and copy assignment*/
 class ALEMBIC_EXPORT noncopyable
 {
 protected:
@@ -191,8 +191,8 @@ private:
 
 #endif
 
-// similiar to boost::totally_ordered
-// only need < and == operators and this fills in the rest
+//! similiar to boost::totally_ordered, can be replaced with std
+/*! only need < and == operators and this fills in the rest */
 template < class T >
 class totally_ordered
 {
@@ -279,6 +279,7 @@ private:
 
 #endif
 
+//!  Created before std::scoped_lock was widely available
 class scoped_lock : noncopyable
 {
 public:

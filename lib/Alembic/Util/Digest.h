@@ -45,8 +45,8 @@ namespace Util {
 namespace ALEMBIC_VERSION_NS {
 
 //-*************************************************************************
-// Digest class. This is a 128 bit hash key produced by our hashing algorithm.
-// It is totally ordered, by way of the totally_ordered operator template.
+/*! Digest class. This is a 128 bit hash key produced by our hashing algorithm.
+It is totally ordered, by way of the totally_ordered operator template. */
 struct Digest : public Alembic::Util::totally_ordered<Digest>
 {
     union

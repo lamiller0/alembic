@@ -49,17 +49,32 @@ namespace Alembic {
 namespace Ogawa {
 namespace ALEMBIC_VERSION_NS {
 
+//! Class which handles writing to an Ogawa file, or std::ostream
 class ALEMBIC_EXPORT OStream
 {
 public:
+
+    //! Opens an Ogawa file named iFileName for writing
     OStream(const std::string & iFileName);
+
+    //! Uses an existing std::ostream for writing.
     OStream(std::ostream * iStream);
     ~OStream();
 
+    //! Returns true if this OStream is valid for writing.
     bool isValid();
 
+    /*! Jumps to the end of what has been written so far
+    and returns where it is.
+    */
     Alembic::Util::uint64_t getAndSeekEndPos();
+
+    //! Write iSize number of bytes from iBuf to the OStream
     void write(const void * iBuf, Alembic::Util::uint64_t iSize);
+
+    /*! Moves the internal position of the OStream
+    to iPos bytes from teh start
+    */
     void seek(Alembic::Util::uint64_t iPos);
 
 private:
