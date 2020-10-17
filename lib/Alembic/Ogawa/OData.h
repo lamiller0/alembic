@@ -44,22 +44,24 @@ namespace Alembic {
 namespace Ogawa {
 namespace ALEMBIC_VERSION_NS {
 
+//! Class which wraps an already written data via OGroup::createData
 class ALEMBIC_EXPORT OData
 {
 public:
 
-    // creates a default empty group
+    //! creates a default empty group
     OData();
 
     ~OData();
 
-    // rewrites over part of the already written data, does not change
-    // the size of the already written data.  If what is attempting
-    // to be rewritten exceeds the boundaries of what is already written,
-    // the existing data will be unchanged
+    /*! rewrites over part of the already written data, does not change
+    the size of the already written data.  If what is attempting
+    to be rewritten exceeds the boundaries of what is already written,
+    the existing data will be unchanged*/
     void rewrite(Alembic::Util::uint64_t iSize, void * iData,
                  Alembic::Util::uint64_t iOffset=0);
 
+    //! Returns the size of OData
     Alembic::Util::uint64_t getSize() const;
 
 private:

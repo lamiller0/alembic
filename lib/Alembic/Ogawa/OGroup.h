@@ -48,65 +48,81 @@ namespace ALEMBIC_VERSION_NS {
 class OGroup;
 typedef Alembic::Util::shared_ptr< OGroup > OGroupPtr;
 
+//! Class which handles writing hierarchy in Ogawa
 class ALEMBIC_EXPORT OGroup
     : public Alembic::Util::enable_shared_from_this< OGroup >
 {
 public:
     ~OGroup();
 
-    // create a group and add it as a child to this group
+    //! create a group and add it as a child to this group
     OGroupPtr addGroup();
 
-    // write the data stream and add it as a child to this group
+    //! write the data stream and add it as a child to this group
     ODataPtr addData(Alembic::Util::uint64_t iSize, const void * iData);
 
-    // write data streams from multiple sources as one continuous data stream
-    // and add it as a child to this group
+    //! write data streams from multiple sources as one continuous data stream
+    //! and add it as a child to this group
     ODataPtr addData(Alembic::Util::uint64_t iNumData,
                      const Alembic::Util::uint64_t * iSizes,
                      const void ** iDatas);
 
-    // write a data stream but DON'T add it as a child to this group
-    // If ODataPtr isn't added to this or any other group, you will
-    // end up abandoning it within the file and waste disk space.
+    /*! write a data stream but DON'T add it as a child to this group
+    If ODataPtr isn't added to this or any other group, you will
+    end up abandoning it within the file and waste disk space. */
     ODataPtr createData(Alembic::Util::uint64_t iSize, const void * iData);
 
-    // write data streams as one continuous data stream but DON'T add it as a
-    // child to this group.
-    // If ODataPtr isn't added to this or any other group, you will
-    // end up abandoning it within the file and waste disk space.
+    /*! write data streams as one continuous data stream but DON'T add it as a
+    child to this group.
+    If ODataPtr isn't added to this or any other group, you will
+    end up abandoning it within the file and waste disk space. */
     ODataPtr createData(Alembic::Util::uint64_t iNumData,
                         const Alembic::Util::uint64_t * iSizes,
                         const void ** iDatas);
 
-    // reference existing data
+    //! reference existing data
     void addData(ODataPtr iData);
 
-    // reference an existing group
+    //! reference an existing group
     void addGroup(OGroupPtr iGroup);
 
-    // convenience function for adding a default NULL group
+    //! convenience function for adding a default NULL group
     void addEmptyGroup();
 
-    // convenience function for adding empty data
+    //! convenience function for adding empty data
     void addEmptyData();
 
-    // can no longer add any more children, we can still update them
-    // via the replace calls though
+    /*! Makes it so that we no longer add any more group or data children,
+    we can still update them via the replace calls though.
+    */
     void freeze();
 
+    //! Whether this group is frozen
+    //! meaning you can no longer add groups or children to it.
     bool isFrozen();
 
+    //! Get the number of child groups and data this group contains
     Alembic::Util::uint64_t getNumChildren() const;
 
+    //! Returns true if the child at the given index is a group.
+    //! Illegal indices return false
     bool isChildGroup(Alembic::Util::uint64_t iIndex) const;
 
+    //! Returns true if the child at the given index is data.
+    //! Illegal indices return false
     bool isChildData(Alembic::Util::uint64_t iIndex) const;
 
+    //! Returns true if the child at the given index is a default empty group.
+    //! Illegal indices return false
     bool isChildEmptyGroup(Alembic::Util::uint64_t iIndex) const;
 
+    //! Returns true if the child at the given index is empty data.
+    //! Illegal indices return false
     bool isChildEmptyData(Alembic::Util::uint64_t iIndex) const;
 
+    //! Replaces data at a given index with iData
+    /*! Although this is not currently used in Alembic, we could use this
+    to update a group to point at data written elsewhere. */
     void replaceData(Alembic::Util::uint64_t iIndex, ODataPtr iData);
 
     // currently I'm going to leave this out, because a bad implementation
