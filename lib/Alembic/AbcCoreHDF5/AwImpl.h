@@ -49,6 +49,7 @@ namespace ALEMBIC_VERSION_NS {
 class OwData;
 
 //-*****************************************************************************
+//! HDF5 Archive writer implementation
 class AwImpl : public AbcA::ArchiveWriter
              , public Alembic::Util::enable_shared_from_this<AwImpl>
 {

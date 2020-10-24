@@ -48,6 +48,7 @@ namespace ALEMBIC_VERSION_NS {
 typedef ::Alembic::Util::BaseDimensions<hsize_t> HDimensions;
 
 //-*****************************************************************************
+//! RAII for HDF attributes
 struct AttrCloser
 {
     AttrCloser( hid_t id ) : m_id( id ) {}
@@ -56,6 +57,7 @@ struct AttrCloser
 };
 
 //-*****************************************************************************
+//! RAII for HDF data space
 struct DspaceCloser
 {
     DspaceCloser( hid_t id ) : m_id( id ) {}
@@ -64,6 +66,7 @@ struct DspaceCloser
 };
 
 //-*****************************************************************************
+//! RAII for HDF data set
 struct DsetCloser
 {
     DsetCloser( hid_t id ) : m_id( id ) {}
@@ -73,6 +76,7 @@ struct DsetCloser
 
 
 //-*****************************************************************************
+//! RAII for HDF Group
 struct GroupCloser
 {
     GroupCloser( hid_t id ) : m_id( id ) {}
@@ -81,6 +85,7 @@ struct GroupCloser
 };
 
 //-*****************************************************************************
+//! RAII for HDF data type
 struct DtypeCloser
 {
     DtypeCloser( hid_t id ) : m_id( id ) {}
@@ -89,6 +94,7 @@ struct DtypeCloser
 };
 
 //-*****************************************************************************
+//! RAII for HDF property
 struct PlistCloser
 {
     PlistCloser( hid_t id ) : m_id( id ) {}
@@ -97,28 +103,38 @@ struct PlistCloser
 };
 
 //-*****************************************************************************
+//! utility which creates an HDF5 property and makes sure the order is tracked
 hid_t CreationOrderPlist();
+
+//! utility which creates a property and will gzip it when written to
 hid_t DsetGzipCreatePlist( const Dimensions &dims, int level );
 
 //-*****************************************************************************
+//! utility which compares 2 HDF5 data types and returns if they are the same
 bool EquivalentDatatypes( hid_t idA, hid_t idB );
 
 //-*****************************************************************************
+//! utility which opens a group if it is being reference or is a child group
 H5Node OpenGroup( H5Node& iParent, const std::string& iName );
 
 //-*****************************************************************************
+//! utility which closes an HDF5 object
 void CloseObject (H5Node& iNode );
 
 //-*****************************************************************************
+//! utility which determines if the HDF5 child group or link exists
 bool GroupExists( H5Node& iParent, const std::string &iName );
 
 //-*****************************************************************************
+//! utility which determines if the HDF5 child object or link exists
 bool ObjectExists( H5Node& iParent, const std::string &iName );
 
 //-*****************************************************************************
+//! utility which determines if the HDF5 child attribute exists
 bool AttrExists( H5Node& iParent, const std::string &iName );
 
 //-*****************************************************************************
+//! utility which determines if the HDF5 child dataset or link exists
 bool DatasetExists( H5Node& iParent, const std::string &iName );
 
 } // End namespace ALEMBIC_VERSION_NS

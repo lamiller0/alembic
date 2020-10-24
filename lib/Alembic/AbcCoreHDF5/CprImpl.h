@@ -45,6 +45,7 @@ namespace AbcCoreHDF5 {
 namespace ALEMBIC_VERSION_NS {
 
 //-*****************************************************************************
+//*! HDF5 compound property reader implementation
 class CprImpl
     : public AbcA::CompoundPropertyReader
     , public Alembic::Util::enable_shared_from_this<CprImpl>

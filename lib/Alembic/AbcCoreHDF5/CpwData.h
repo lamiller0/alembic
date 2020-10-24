@@ -43,9 +43,9 @@ namespace Alembic {
 namespace AbcCoreHDF5 {
 namespace ALEMBIC_VERSION_NS {
 
-// data class owned by CpwImpl, or OwImpl if it is a "top" object
-// it owns and makes child properties as well as the group hid_t
-// when necessary
+/*! HDF5 compound property writer data class owned by CpwImpl, or OwImpl if
+it is a "top" object it owns and makes child properties as well as the group
+hid_t when necessary */
 class CpwData : public Alembic::Util::enable_shared_from_this<CpwData>
 {
 public:

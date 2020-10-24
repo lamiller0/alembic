@@ -45,7 +45,7 @@ namespace AbcCoreHDF5 {
 namespace ALEMBIC_VERSION_NS {
 
 //-*****************************************************************************
-// These are _always_ created as shared ptrs.
+//! HDF object writer implementation
 class OwImpl
     : public AbcA::ObjectWriter
     , public Alembic::Util::enable_shared_from_this<OwImpl>
@@ -65,7 +65,7 @@ public:
     //-*************************************************************************
     // FROM ABSTRACT
     //-*************************************************************************
-    
+
     virtual const AbcA::ObjectHeader & getHeader() const;
 
     virtual AbcA::ArchiveWriterPtr getArchive();

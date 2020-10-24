@@ -53,7 +53,6 @@ typedef Alembic::Util::weak_ptr<CacheImpl> CacheImplWeakPtr;
 
 //-*****************************************************************************
 //! This class is underimplemented. It ought to allow limits on storage.
-//! Todo!
 //! THIS CLASS IS NOT MULTITHREAD SAFE
 class CacheImpl : public AbcA::ReadArraySampleCache
 {
@@ -62,12 +61,12 @@ public:
     // PUBLIC INTERFACE
     //-*************************************************************************
     CacheImpl();
-    
+
     virtual ~CacheImpl();
 
     virtual AbcA::ReadArraySampleID
     find( const AbcA::ArraySample::Key &iKey );
-    
+
     virtual AbcA::ReadArraySampleID
     store( const AbcA::ArraySample::Key &iKey,
            AbcA::ArraySamplePtr iBytes );
@@ -90,7 +89,7 @@ private:
             ABCA_ASSERT( iGivenPtr.get() == iDeleterPtr.get(),
                          "Given Ptr must match contents of DeleterPtr" );
         }
-        
+
         // This is the original, given Array Sample Ptr.
         AbcA::ArraySamplePtr given;
 

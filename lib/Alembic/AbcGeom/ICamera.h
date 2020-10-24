@@ -47,6 +47,7 @@ namespace AbcGeom {
 namespace ALEMBIC_VERSION_NS {
 
 //-*****************************************************************************
+//! Camera reader schema
 class ALEMBIC_EXPORT ICameraSchema : public Abc::ISchema<CameraSchemaInfo>
 {
     //-*************************************************************************
@@ -68,7 +69,7 @@ public:
     //! This constructor creates a new camera reader.
     //! The first argument is the parent ICompoundProperty, from which the
     //! error handler policy for is derived.  The second argument is the name
-    //! of the ICompoundProperty that contains this schemas properties.  The 
+    //! of the ICompoundProperty that contains this schemas properties.  The
     //! remaining optional arguments can be used to override the
     //! ErrorHandlerPolicy and to specify schema interpretation matching.
     ICameraSchema( const ICompoundProperty & iParent,

@@ -45,6 +45,7 @@ namespace AbcCoreHDF5 {
 namespace ALEMBIC_VERSION_NS {
 
 //-*****************************************************************************
+//! HDF5 Array property implementation
 class AprImpl
     : public SimplePrImpl<AbcA::ArrayPropertyReader,
                           AprImpl,
@@ -65,7 +66,7 @@ public:
 protected:
     friend class SimplePrImpl<AbcA::ArrayPropertyReader, AprImpl,
                               AbcA::ArraySamplePtr&>;
-    
+
     //-*************************************************************************
     // This function is called by SimplePrImpl to provide the actual
     // property reading.

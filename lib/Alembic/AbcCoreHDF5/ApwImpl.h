@@ -46,6 +46,7 @@ namespace AbcCoreHDF5 {
 namespace ALEMBIC_VERSION_NS {
 
 //-*****************************************************************************
+//! HDF5 Array Property writer implementation
 class ApwImpl
     : public SimplePwImpl<AbcA::ArrayPropertyWriter,
                           ApwImpl,
@@ -65,7 +66,7 @@ protected:
              uint32_t iTimeSamplingIndex );
 
     virtual AbcA::ArrayPropertyWriterPtr asArrayPtr();
-    
+
 public:
     virtual ~ApwImpl();
 

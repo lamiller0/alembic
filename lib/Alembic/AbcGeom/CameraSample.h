@@ -46,6 +46,7 @@ namespace AbcGeom {
 namespace ALEMBIC_VERSION_NS {
 
 //-*****************************************************************************
+//! Class for storing all the little bits of data that makes up a camera.
 class ALEMBIC_EXPORT CameraSample
 {
 public:
@@ -218,7 +219,7 @@ public:
         m_overscanTop = 0.0;
         m_overscanBottom = 0.0;
 
-        // optical property of the lens, focal length divided by 
+        // optical property of the lens, focal length divided by
         // "effective" lens diameter
         m_fStop = 5.6;
 

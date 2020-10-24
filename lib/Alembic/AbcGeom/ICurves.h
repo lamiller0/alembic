@@ -50,6 +50,7 @@ namespace AbcGeom {
 namespace ALEMBIC_VERSION_NS {
 
 //-*****************************************************************************
+//! Curves reader schema
 class ALEMBIC_EXPORT ICurvesSchema : public IGeomBaseSchema<CurvesSchemaInfo>
 {
 public:

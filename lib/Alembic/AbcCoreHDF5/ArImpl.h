@@ -48,6 +48,7 @@ namespace ALEMBIC_VERSION_NS {
 class OrData;
 
 //-*****************************************************************************
+//! HDF5 Archive reader implementation
 class ArImpl
     : public AbcA::ArchiveReader
     , public Alembic::Util::enable_shared_from_this<ArImpl>

@@ -45,6 +45,7 @@ namespace Abc {
 namespace ALEMBIC_VERSION_NS {
 
 //-*****************************************************************************
+//! templated scalar property used to represent all the various types
 template <class TRAITS>
 class ITypedScalarProperty : public IScalarProperty
 {
@@ -83,7 +84,7 @@ public:
     static bool matches( const AbcA::PropertyHeader &iHeader,
                          SchemaInterpMatching iMatching = kStrictMatching )
     {
-        return ( 
+        return (
             iHeader.getDataType().getPod() == TRAITS::dataType().getPod() &&
             iHeader.getDataType().getExtent() ==
                 TRAITS::dataType().getExtent() &&

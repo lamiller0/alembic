@@ -45,6 +45,7 @@ namespace AbcCoreHDF5 {
 namespace ALEMBIC_VERSION_NS {
 
 //-*****************************************************************************
+//! HDF5 Compound property writer implementation.
 class CpwImpl
     : public AbcA::CompoundPropertyWriter
     , public Alembic::Util::enable_shared_from_this<CpwImpl>

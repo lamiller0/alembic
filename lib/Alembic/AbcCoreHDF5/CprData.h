@@ -44,9 +44,9 @@ namespace Alembic {
 namespace AbcCoreHDF5 {
 namespace ALEMBIC_VERSION_NS {
 
-// data class owned by CprImpl, or OrImpl if it is a "top" object
-// it owns and makes child properties as well as the group hid_t
-// when necessary
+/*! HDF5 compound property reader data class owned by CprImpl, or OrImpl if it
+is a "top" object it owns and makes child properties as well as the
+group hid_t when necessary.*/
 class CprData : public Alembic::Util::enable_shared_from_this<CprData>
 {
 public:
