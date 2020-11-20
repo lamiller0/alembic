@@ -47,6 +47,7 @@ namespace ALEMBIC_VERSION_NS {
 using Alembic::Util::Dimensions;
 
 //-*****************************************************************************
+//! Templated sample class for representing large arrays
 template <class TRAITS>
 class TypedArraySample : public AbcA::ArraySample
 {
@@ -57,29 +58,30 @@ public:
     typedef typename std::vector<value_type> value_vector;
 
     //-*************************************************************************
-    // Default
+    //! Default
     TypedArraySample()
       : AbcA::ArraySample( NULL, TRAITS::dataType(), Dimensions() ) {}
 
     //-*************************************************************************
-    // From pointer+num or pointer+dims
+    //! For 1 dimensional arrays, pointer+num
     TypedArraySample( const value_type *iValues, size_t iNumVals )
       : AbcA::ArraySample( reinterpret_cast<const void *>( iValues ),
                            TRAITS::dataType(), Dimensions( iNumVals ) ) {}
 
+    //! Rarely (never) used multi-dimensional arrays packed into a flat pointer
     TypedArraySample( const value_type *iValues, const Dimensions &iDims )
       : AbcA::ArraySample( reinterpret_cast<const void *>( iValues ),
                            TRAITS::dataType(), iDims ) {}
 
     //-*************************************************************************
-    // From std::vector
+    //! Create from std::vector
     TypedArraySample( const value_vector &iVec )
       : AbcA::ArraySample( reinterpret_cast<const void *>( iVec.size() > 0 ?
                                                            &iVec.front() :
                                                            NULL ),
                            TRAITS::dataType(), Dimensions( iVec.size() ) ) {}
 
-    // This is for the case in which the data is multi-dimensional
+    //! Rarely (never) used multi-dimensional arrays packed into a std::vector
     TypedArraySample( const value_vector &iVec,
                       const Dimensions &iDims )
       : AbcA::ArraySample( reinterpret_cast<const void *>( iVec.size() > 0 ?
@@ -95,7 +97,7 @@ public:
     // COPY & ASSIGMENT
     //-*************************************************************************
 
-    // From base copy
+    //! From base copy
     TypedArraySample( const AbcA::ArraySample &iCopy )
       : AbcA::ArraySample( iCopy )
     {
@@ -105,6 +107,7 @@ public:
                      << ", but got: " << iCopy.getDataType() );
     }
 
+    //! From base copy
     TypedArraySample<TRAITS> operator=( const AbcA::ArraySample &iCopy )
     {
         ArraySample::operator=( iCopy );
@@ -117,22 +120,27 @@ public:
         return *this;
     }
 
+    //! Raw array pointer getter
     const value_type *get() const
     {
         return reinterpret_cast<const value_type *>( getData() );
     }
 
+    //! Raw array pointer getter
     const value_type *operator->() const { return this->get(); }
 
     //-*************************************************************************
+    //! Index into the raw array
     const value_type &operator[]( const size_t i ) const
     {
         return this->get()[i];
     }
 
     //-*************************************************************************
+    //! Returns the number of elements in the flattened array
     size_t size() const { return this->getDimensions().numPoints(); }
 
+    //! Convenience function for creating an array with no elements
     static TypedArraySample<TRAITS> emptySample()
     {
         return TypedArraySample<TRAITS>( NULL, 0 );

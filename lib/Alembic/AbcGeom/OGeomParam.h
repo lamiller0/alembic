@@ -45,6 +45,20 @@ namespace AbcGeom {
 namespace ALEMBIC_VERSION_NS {
 
 //-*****************************************************************************
+//! Templated writer for GeomParams.
+/*! GeomParams are a way to represent data that maps to geometry.
+A scope is provided to indicate how it maps to the geometry, such as per point
+or per face.  GeomParams can also optionally wrap both the data array and
+an index array to reduce the overall data impact when elements are reused.
+
+If just the data is set, there is only a single array property
+with the scope being stored in it's metadata.
+
+If both the data and indices are set, then it is represented as
+a compound property that stores the data as a child array property
+and the indices as another child uint32_t array property, with
+the scope stored on the meta data of the compound property.
+*/
 template <class TRAITS>
 class OTypedGeomParam
 {
@@ -54,22 +68,25 @@ public:
 
 
     //-*************************************************************************
-    // inner class for setting
+    //! Sample class for setting (and resetting) before writing
     class Sample
     {
     public:
         typedef Sample this_type;
 
+        //! Default with no data set
         Sample()
           : m_scope( kUnknownScope )
         {}
 
+        //! Set only the scope and data array, no indices
         Sample( const Abc::TypedArraySample<TRAITS> &iVals,
                 GeometryScope iScope )
           : m_vals( iVals )
           , m_scope( iScope )
         {}
 
+        //! Sets the scope, data array, and index array
         Sample( const Abc::TypedArraySample<TRAITS> &iVals,
                 const Abc::UInt32ArraySample &iIndices,
                 GeometryScope iScope )
@@ -78,21 +95,31 @@ public:
           , m_scope ( iScope )
         {}
 
+        //! Sets just the data array sample
         void setVals( const Abc::TypedArraySample<TRAITS> &iVals )
         { m_vals = iVals; }
+
+        //! Returns just the data array sample that have been set
         const Abc::TypedArraySample<TRAITS> &getVals() const
         { return m_vals; }
 
+        //! Sets just the indices
         void setIndices( const Abc::UInt32ArraySample &iIndices )
         { m_indices = iIndices; }
+
+        //! Returns the indices that have been optionally set
         const Abc::UInt32ArraySample &getIndices() const
         { return m_indices; }
 
+        //! Change the scope for the property
         void setScope( GeometryScope iScope )
         { m_scope = iScope; }
+
+        //! Returns the scope that has been set
         GeometryScope getScope() const
         { return m_scope; }
 
+        //! Clears any data, indices, and scope that has been set
         void reset()
         {
             m_vals.reset();
@@ -100,6 +127,7 @@ public:
             m_scope = kUnknownScope;
         }
 
+        //! Returns true if the data array has been set
         bool valid() const { return m_vals; }
 
         ALEMBIC_OPERATOR_BOOL( valid() );
@@ -119,6 +147,10 @@ public:
         return TRAITS::interpretation();
     }
 
+    //! Returns whether the property is of the templated type
+    /*! The iMatching argument is whether to strictly match or to
+    just make sure the POD type and extent matches.
+    */
     static bool matches( const AbcA::PropertyHeader &iHeader,
                          SchemaInterpMatching iMatching = kStrictMatching )
     {
@@ -141,6 +173,7 @@ public:
 
     }
 
+    //! Base constructor with nothing created
     OTypedGeomParam()
     : m_isIndexed(false)
     , m_scope(kUnknownScope)
@@ -148,6 +181,8 @@ public:
     {
     }
 
+    //! Convenience constructor that calls through to the
+    //! OTypedGeomParam that takes AbcA::CompoundPropertyWriterPtr
     OTypedGeomParam( OCompoundProperty iParent,
                      const std::string &iName,
                      bool iIsIndexed,
@@ -165,6 +200,18 @@ public:
             iArrayExtent, iArg0, iArg1, iArg2 );
     }
 
+    //! Creates a GeomParam that is the child of iParent.
+    /*!
+    \param iParent The parent compound property to create our new property.
+    \param iName The name of this new child property.
+    \param isIndexed If false we will create a single array property, if true
+    creates a parent compound with a child array property and another child
+    uint32_t indexed array property.
+    \param iScope The scope of this property (per point, per face, etc)
+    \param iArrayExtent Should almost always be 1, this gets stored in the
+    metadata and can be used to represent exotic data types like an
+    array of 2 colors per point, in that case iArrayExten would be 2.
+    */
     OTypedGeomParam( AbcA::CompoundPropertyWriterPtr iParent,
                      const std::string &iName,
                      bool iIsIndexed,
