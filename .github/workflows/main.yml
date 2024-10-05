@@ -197,7 +197,7 @@ jobs:
             build-shared: 'ON'
             compiler-desc: msvc17.5
             cxx-standard: 17
-            vfx-cy: 2024
+            vfx-cy: 2023
             osver: 2022
 
           # C++17 Debug shared
@@ -206,7 +206,7 @@ jobs:
             build-shared: 'ON'
             compiler-desc: msvc17.5
             cxx-standard: 17
-            vfx-cy: 2024
+            vfx-cy: 2023
             osver: 2022
     steps:
       - name: Checkout
