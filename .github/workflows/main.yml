@@ -175,3 +175,70 @@ jobs:
                 --output-on-failure \
                 -VV
         working-directory: _build
+
+  windows:
+    name: 'Windows VFXP-${{ matrix.vfx-cy }}
+      <${{ matrix.compiler-desc }},
+       config=${{ matrix.build-type }}, 
+       shared=${{ matrix.build-shared }}, 
+       cxx=${{ matrix.cxx-standard }}, 
+       python=OFF>' 
+    runs-on: windows-${{ matrix.osver }}
+    strategy:
+      matrix:
+        build: [1, 2]
+        include:
+          # -------------------------------------------------------------------
+          # VFX CY2023 - C++17 - Windows 2022 runner - MSVC 2022 (17.5)
+          # -------------------------------------------------------------------
+          # C++17, Release Shared
+          - build: 1
+            build-type: Release
+            build-shared: 'ON'
+            compiler-desc: msvc17.5
+            cxx-standard: 17
+            vfx-cy: 2024
+            osver: 2022
+
+          # C++17 Debug shared
+          - build: 1
+            build-type: Debug
+            build-shared: 'ON'
+            compiler-desc: msvc17.5
+            cxx-standard: 17
+            vfx-cy: 2024
+            osver: 2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Create build directories
+        run: |
+          mkdir _install
+          mkdir _build
+        shell: bash
+      - name: Configure
+        run: |
+          vcpkg install imath
+          printenv
+          cmake ../. \
+                -DImath_ROOT=$VCPKG_INSTALLATION_ROOT/installed/x64-windows-release
+                -DCMAKE_INSTALL_PREFIX=../_install \
+                -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }}
+        working-directory: _build
+        shell: bash
+      - name: Build
+        run: |
+          cmake --build . \
+                --target install \
+                --config ${{ matrix.build-type }} \
+                -- -j4
+        working-directory: _build
+        shell: bash
+      - name: Test
+        run: |
+          ctest -T Test \
+                --timeout 7200 \
+                --output-on-failure \
+                -VV
+        working-directory: _build
+        shell: bash
