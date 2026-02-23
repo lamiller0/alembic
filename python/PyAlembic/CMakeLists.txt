@@ -40,6 +40,11 @@ IF (APPLE)
     SET(Boost_USE_MULTITHREADED OFF)
 ENDIF()
 
+# cmake 3.30+ - drop support for Findboost module.
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 OLD)
+endif()
+
 # require 1.53+ since we need std::shared_ptr supported in the wrapper
 FIND_PACKAGE(Boost 1.53.0 COMPONENTS "python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
 
