@@ -33,7 +33,7 @@
 ##
 ##-*****************************************************************************
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.13)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.17)
 
 PROJECT(Alembic VERSION 1.8.10)
 

@@ -149,7 +149,14 @@ ENDIF ()
 INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/lib"
     "${PROJECT_SOURCE_DIR}/python/PyAlembic")
 
-ADD_LIBRARY(alembic SHARED ${CPP_FILES})
+FIND_PACKAGE(Python${PYALEMBIC_PYTHON_MAJOR} REQUIRED COMPONENTS Interpreter Development)
+if(PYALEMBIC_PYTHON_MAJOR EQUAL 2)
+    Python2_add_library(alembic ${CPP_FILES})
+elseif(PYALEMBIC_PYTHON_MAJOR EQUAL 3)
+    Python3_add_library(alembic ${CPP_FILES} WITH_SOABI)
+else()
+    Python_add_library(alembic ${CPP_FILES} WITH_SOABI)
+endif()
 
 TARGET_LINK_LIBRARIES(alembic
     LINK_PUBLIC
@@ -173,12 +180,3 @@ INSTALL (TARGETS alembic
 IF (USE_TESTS AND NOT APPLE)
     ADD_SUBDIRECTORY(Tests)
 ENDIF()
-
-# For the python libs Mac looks for .so, .dylib didnt work
-SET (EXT ".so")
-IF (WIN32)
-    SET (EXT ".pyd")
-ENDIF ()
-
-# dont add any wacky lib prefix, as python doesnt like this
-set_target_properties(alembic PROPERTIES PREFIX "" SUFFIX ${EXT})
